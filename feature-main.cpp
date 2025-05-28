@@ -137,6 +137,29 @@ cout << "The list was empty. Employee inserted at beginning.\n\n";
         cout << "Employee " << newEmp->emp_full_name << " inserted successfully at the end.\n\n";
     }
 }
+void searching() {
+    string id;
+    cout << "\nEnter the employee ID to search: ";
+    cin >> id;
+    if (head == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+    Employee* temp = head;
+    while (temp != NULL) {
+        if (temp->emp_id == id) {
+      cout << "Full Name     : " << temp->emp_full_name << "\n";
+        cout << "Employee ID   : " << temp->emp_id << "\n";
+        cout << "Salary        : " << temp->emp_salary << "\n";
+        cout << "Department    : " << temp->emp_department << "\n";
+        cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
+        cout << "-------------------------------\n";   
+            return;
+        }
+        temp = temp->next;
+    }
+    cout << "Employee with ID " << id << " not found.\n\n";
+}
 void sortByName() {
     if (head == NULL  head->next == NULL) return;
     bool swapped;
@@ -244,7 +267,7 @@ switch (choice) {
                 break;
             }
             case 4:
-                
+                  searching();
                 break;
             case 5:
                
