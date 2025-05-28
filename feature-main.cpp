@@ -137,6 +137,65 @@ cout << "The list was empty. Employee inserted at beginning.\n\n";
         cout << "Employee " << newEmp->emp_full_name << " inserted successfully at the end.\n\n";
     }
 }
+void delete_beg() {
+    if (head == NULL) {
+        cout << "The list is empty.\n\n";
+        return;
+    }
+    Employee* temp = head;
+    head = head->next;
+
+    if (head != NULL) head->prev = NULL;
+    else tail = NULL;
+
+    cout << temp->emp_full_name << " deleted successfully from the beginning.\n\n";
+    delete temp;
+}
+void delete_random() {
+    if (head == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+    int pos;
+    cout << "Enter the position of employee to delete: ";
+    cin >> pos;
+    if (pos < 1||  pos > numberOfEmp()) {
+        cout << "Invalid position!\n";
+        return;
+    }
+    Employee* temp = head;
+    if (pos == 1) {
+        head = head->next;
+        if (head != NULL) head->prev = NULL;
+        else tail = NULL;
+        cout << temp->emp_full_name << " deleted successfully from position " << pos << ".\n\n";
+        delete temp;
+        return;
+    }
+    for (int i = 1; i < pos; i++) temp = temp->next;
+    if (temp->next == NULL) {
+        tail = temp->prev;
+        tail->next = NULL;
+    } else {
+        temp->prev->next = temp->next;
+        temp->next->prev = temp->prev;
+    }
+    cout << temp->emp_full_name << " deleted successfully from position " << pos << ".\n\n";
+    delete temp;
+}
+void delete_last() {
+    if (head == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+    Employee* temp = tail;
+    tail = tail->prev;
+    if (tail != NULL) tail->next = NULL;
+    else head = NULL;
+
+    cout << temp->emp_full_name << " deleted successfully from the end.\n\n";
+    delete temp;
+}
 void backward() {
     if (tail == NULL) {
         cout << "The list is empty.\n";
@@ -172,6 +231,54 @@ void forward() {
         temp = temp->next;
     }
     cout << "\n";
+}
+void update() {
+    string id;
+    cout << "Enter the Employee ID to update: ";
+    cin >> id;
+    Employee* temp = head;
+    while (temp != NULL) {
+        if (temp->emp_id == id) {cout << "Updating details for " << temp->emp_full_name << "...\n";
+            cout << "  Enter new full name: ";
+            cin.ignore();
+            getline(cin, temp->emp_full_name);
+            cout << "  Enter new salary: ";
+            cin >> temp->emp_salary;
+            cout << "  Enter new department: ";
+            cin.ignore();
+             getline(cin, temp->emp_department);
+            cout << "  Enter new phone number: ";
+            cin >> temp->emp_phoneNumber;
+            cout << "Employee details updated successfully.\n\n";
+            return;
+        }
+        temp = temp->next;
+    }
+    cout << "Employee ID not found.\n";
+}
+void retrieve() {
+    string id;
+    cout << "Enter the Employee ID to retrieve details: ";
+    cin >> id;
+    if (head == NULL) {
+        cout << "The list is empty.\n\n";
+        return;
+    }
+    Employee* temp = head;
+    while (temp != NULL) {
+        if (temp->emp_id == id) {
+            cout << "\n--- Employee Found ---\n";
+            cout << "Full Name     : " << temp->emp_full_name << "\n";
+            cout << "Employee ID   : " << temp->emp_id << "\n";
+            cout << "Salary        : " << temp->emp_salary << "\n";
+            cout << "Department    : " << temp->emp_department << "\n";
+            cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
+            cout << "-------------------------------\n\n";
+            return;
+        }
+        temp = temp->next;
+    }
+    cout << "Employee with ID " << id << " not found.\n\n";
 }
 
 void sortByName() {
@@ -273,7 +380,15 @@ switch (choice) {
                 break;
             }
             case 2: {
-                
+                int del;
+                cout << "Enter 1 to delete at beginning"<<endl;
+                cout <<" Enter 2 to delete at specific position" <<endl;
+                cout <<" Enter 3 to delete at end: ";
+                cin >> del;
+                if (del == 1) delete_beg();
+                else if (del == 2) delete_random();
+                else if (del == 3) delete_last();
+                else cout << "Invalid delete choice!\n";
                 break;
 }
             case 3: {
@@ -294,10 +409,10 @@ switch (choice) {
                
           break;
                case 6:
-             
+               update();
          break;
          case 7:
-         
+         retrieve();
       break;
              case 8:
           sortEmployees();   
