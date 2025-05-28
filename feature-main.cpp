@@ -137,6 +137,76 @@ cout << "The list was empty. Employee inserted at beginning.\n\n";
         cout << "Employee " << newEmp->emp_full_name << " inserted successfully at the end.\n\n";
     }
 }
+void sortByName() {
+    if (head == NULL  head->next == NULL) return;
+    bool swapped;
+    Employee *ptr1;
+    Employee *lptr = NULL;
+    do {
+        swapped = false;
+        ptr1 = head;
+        while (ptr1->next != lptr) {
+            if (ptr1->emp_full_name > ptr1->next->emp_full_name) {
+                // Swap the data
+                swap(ptr1->emp_full_name, ptr1->next->emp_full_name);
+                swap(ptr1->emp_id, ptr1->next->emp_id);
+                swap(ptr1->emp_salary, ptr1->next->emp_salary);
+                swap(ptr1->emp_department, ptr1->next->emp_department);
+                swap(ptr1->emp_phoneNumber, ptr1->next->emp_phoneNumber);
+                swapped = true;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+void sortByID() {
+    if (head == NULL  head->next == NULL) return;
+    bool swapped;
+    Employee *ptr1;
+    Employee *lptr = NULL;
+    do {
+        swapped = false;
+        ptr1 = head;
+        while (ptr1->next != lptr) {
+            if (ptr1->emp_id > ptr1->next->emp_id) {
+                swap(ptr1->emp_full_name, ptr1->next->emp_full_name);
+                swap(ptr1->emp_id, ptr1->next->emp_id);
+                swap(ptr1->emp_salary, ptr1->next->emp_salary);
+                swap(ptr1->emp_department, ptr1->next->emp_department);
+                swap(ptr1->emp_phoneNumber, ptr1->next->emp_phoneNumber);
+                swapped = true;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+void sortEmployees() {
+    if (head == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }  
+    int choice;
+    cout << "\nSort Employees by:\n";
+    cout << "1. Name\n";
+    cout << "2. ID\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+    switch(choice) {
+        case 1:
+            sortByName();
+            break;
+        case 2:
+            sortByID();
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            return;
+    }
+    cout << "Employees sorted successfully!\n";
+    forward(); // Display the sorted list
+}
 void menu() {
     int choice;
     do {
@@ -186,6 +256,7 @@ switch (choice) {
          
       break;
              case 8:
+          sortEmployees();   
      break;
             case 0:
                 cout << "Exiting program...\n";
