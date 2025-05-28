@@ -137,6 +137,43 @@ cout << "The list was empty. Employee inserted at beginning.\n\n";
         cout << "Employee " << newEmp->emp_full_name << " inserted successfully at the end.\n\n";
     }
 }
+void backward() {
+    if (tail == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+    Employee* temp = tail;
+    cout << "\n--- Employee List (Backward) ---\n";
+    while (temp != NULL) {
+        cout << "Full Name     : " << temp->emp_full_name << "\n";
+        cout << "Employee ID   : " << temp->emp_id << "\n";
+        cout << "Salary        : " << temp->emp_salary << "\n";
+        cout << "Department    : " << temp->emp_department << "\n";
+        cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
+        cout << "-------------------------------\n";
+        temp = temp->prev;
+    }
+    cout << "\n";
+}
+void forward() {
+    if (head == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+    Employee* temp = head;
+    cout << "\n--- Employee List (Forward) ---\n";
+    while (temp != NULL) {
+        cout << "Full Name     : " << temp->emp_full_name << "\n";
+        cout << "Employee ID   : " << temp->emp_id << "\n";
+        cout << "Salary        : " << temp->emp_salary << "\n";
+        cout << "Department    : " << temp->emp_department << "\n";
+        cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
+        cout << "-------------------------------\n";
+        temp = temp->next;
+    }
+    cout << "\n";
+}
+
 void sortByName() {
     if (head == NULL  head->next == NULL) return;
     bool swapped;
@@ -240,7 +277,14 @@ switch (choice) {
                 break;
 }
             case 3: {
-               
+                
+                int display;
+         cout << "Enter 1 to display forward"<<endl;
+        cout << "Enter 2 to display backward"<<endl;
+                cin >> display;
+                if (display == 1) forward();
+                else if (display == 2) backward();
+                else cout << "Invalid display choice!\n";
                 break;
             }
             case 4:
