@@ -196,6 +196,29 @@ void delete_last() {
     cout << temp->emp_full_name << " deleted successfully from the end.\n\n";
     delete temp;
 }
+void searching() {
+    string id;
+    cout << "\nEnter the employee ID to search: ";
+    cin >> id;
+    if (head == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+    Employee* temp = head;
+    while (temp != NULL) {
+        if (temp->emp_id == id) {
+      cout << "Full Name     : " << temp->emp_full_name << "\n";
+        cout << "Employee ID   : " << temp->emp_id << "\n";
+        cout << "Salary        : " << temp->emp_salary << "\n";
+        cout << "Department    : " << temp->emp_department << "\n";
+        cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
+        cout << "-------------------------------\n";   
+            return;
+        }
+        temp = temp->next;
+    }
+    cout << "Employee with ID " << id << " not found.\n\n";
+}
 void backward() {
     if (tail == NULL) {
         cout << "The list is empty.\n";
@@ -403,7 +426,7 @@ switch (choice) {
                 break;
             }
             case 4:
-                
+                searching();
                 break;
             case 5:
                
