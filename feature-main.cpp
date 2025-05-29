@@ -282,7 +282,7 @@ void retrieve() {
 }
 
 void sortByName() {
-    if (head == NULL  head->next == NULL) return;
+    if (head == NULL || head->next == NULL) return;
     bool swapped;
     Employee *ptr1;
     Employee *lptr = NULL;
@@ -305,7 +305,7 @@ void sortByName() {
     } while (swapped);
 }
 void sortByID() {
-    if (head == NULL  head->next == NULL) return;
+    if (head == NULL || head->next == NULL) return;
     bool swapped;
     Employee *ptr1;
     Employee *lptr = NULL;
