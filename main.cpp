@@ -414,7 +414,7 @@ switch (choice) {
                 else cout << "Invalid delete choice!\n";
                 break;
 }
-            case 3: {
+            case 3: { 
                 
                 int display;
          cout << "Enter 1 to display forward"<<endl;
@@ -450,6 +450,5 @@ switch (choice) {
 }
 int main() {
     menu();
-    return 0;
-    
+    return 0; 
 }
