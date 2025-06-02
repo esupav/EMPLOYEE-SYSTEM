@@ -1,11 +1,11 @@
-# Simple-Calculator-Group 2
+# Employee-System-Group 2
 ## Group Members
 1. Group Leader: Manages repository and reviews pull 
 requests and implemented substraction 
-2. Member 1: Implemented addition functionality.
-3. Member 2: Implemented remainder functionality.
-4. Member 3: Implemented multiplication functionality.
-5. Member 4: Implemented division functionality.
+2. Member 1: Implemented  functionality.
+3. Member 2: Implemented  functionality.
+4. Member 3: Implemented  functionality.
+5. Member 4: Implemented  functionality.
 6. Member 5: Implemented the user interface and main program 
 logic 
 ## How to Run the Program
