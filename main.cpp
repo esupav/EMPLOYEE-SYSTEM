@@ -351,20 +351,7 @@ void sortEmployees() {
     cout << "Employees sorted successfully!\n";
     forward(); // Display the sorted list
 }
-void Group_members() {
-    cout << "\n\n        DILLA UNIVERSITY       \n";
-    cout << "      SCHOOL OF COMPUTING     \n";
-    cout << "   COMPUTER SCIENCE DEPARTMENT   \n";
-    cout << " DATA STRUCTURE AND ALGORITHM ASSIGNMENT    \n";
-    cout << "GROUP MEMBERS\n";
-    cout << "NAME\t\t\t\tID\n";
-    cout << "1, Esubalew Kifle  \t\t\t\trns-005624\n";
-    cout << "2, Harun Habib      \t\t\rmns-9269/34\n";
-    cout << "3, Fenet Teshome   \t\t1500859\n";
-    cout << "4, Getahum Ayalew   \t\t\t1177/23\n";
-    cout << "5, Habtamu Ayele   \t\t\t9485/23\n";
-    cout << "6, Abinet Alemayehu\t\t\t1501113\n\n";
-}
+
 void menu() {
     int choice;
     do {
