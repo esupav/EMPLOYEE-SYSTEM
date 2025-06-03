@@ -1,5 +1,5 @@
 
-# Employee Management System (EMS) - C++ Application 
+# Employee System (ES) - C++ Application 
  
 ## Table of Contents 
 1. [Introduction](#introduction) 
