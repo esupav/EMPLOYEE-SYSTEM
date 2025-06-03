@@ -360,7 +360,7 @@ void menu() {
         cout << "2: Delete employee\n";
         cout << "3: Display employees\n";
         cout << "4: Search employee\n";
-        cout << "5: View group members\n";
+        cout << "5: \n";
         cout << "6: Update employee details\n";
         cout << "7: Retrieve employee by ID\n";
         cout << "8: Sort employee list\n";
@@ -407,7 +407,7 @@ switch (choice) {
                 
                 break;
             case 5:
-                Group_members();
+                ;
           break;
                case 6:
                update();
