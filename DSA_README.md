@@ -12,7 +12,7 @@
  
 ## Introduction 
  
-The Employee Management System (EMS) is a comprehensive C++ application that manages employee records using a doubly linked list data structure. It automates salary calculations based on department, education level, and work experience while providing full CRUD (Create, Read, Update, Delete) functionality. 
+The Employee Record System (EMS) is a comprehensive C++ application that manages employee records using a doubly linked list data structure. It automates salary calculations based on department, education level, and work experience while providing full CRUD (Create, Read, Update, Delete) functionality. 
  
 Key Capabilities: 
 - Automated salary calculations with department-specific base pay 
@@ -88,7 +88,6 @@ Inserting Employee at Beginning:
   1. PhD 
   2. Master 
   3. Bachelor 
-  4. Diploma 
   Select Education Level (1-4): 1 
   Enter Years of Work Experience: 12 
   Enter Employee Phone Number: 5551234567 
