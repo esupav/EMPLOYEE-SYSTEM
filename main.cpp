@@ -35,7 +35,6 @@ int numberOfEmp() {
     }
     return count;
 }
-
 bool check_ID(const string& id) {
     Employee* temp = head;
     while (temp != NULL) {
@@ -44,7 +43,6 @@ bool check_ID(const string& id) {
     }
     return true;
 }
-
 double calculateSalary(const string& department, const string& education, int experience) {
     double base_salary = 0;
     
