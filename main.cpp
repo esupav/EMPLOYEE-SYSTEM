@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
+#include <cctype>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ struct Employee {
     string emp_department;
     string emp_education;
     int emp_experience;
-    int emp_phoneNumber;
+    string emp_phoneNumber;
     string emp_gender;
     Employee *prev;
     Employee *next;
@@ -21,10 +22,10 @@ struct Employee {
 Employee *head = NULL;
 Employee *tail = NULL;
 
-// Department salary ranges
-const double TEACHING_BASE = 30000;
-const double ADMIN_BASE = 25000;
-const double OTHER_BASE = 20000;
+const double TEACHING_BASE = 13000;
+const double ADMIN_BASE = 15000;
+const double OTHER_BASE = 2000;
+const string FILENAME = "employees.txt";
 
 int numberOfEmp() {
     Employee *temp = head;
@@ -35,6 +36,7 @@ int numberOfEmp() {
     }
     return count;
 }
+
 bool check_ID(const string& id) {
     Employee* temp = head;
     while (temp != NULL) {
@@ -43,10 +45,10 @@ bool check_ID(const string& id) {
     }
     return true;
 }
+
 double calculateSalary(const string& department, const string& education, int experience) {
     double base_salary = 0;
     
-    // Set base salary based on department
     if (department == "Teaching") {
         base_salary = TEACHING_BASE;
     } else if (department == "Administrative") {
@@ -55,7 +57,6 @@ double calculateSalary(const string& department, const string& education, int ex
         base_salary = OTHER_BASE;
     }
     
-    // Adjust for education level
     if (education == "PhD") {
         base_salary *= 1.5;
     } else if (education == "Master") {
@@ -66,7 +67,6 @@ double calculateSalary(const string& department, const string& education, int ex
         base_salary *= 1.05;
     }
     
-    // Adjust for experience (5% increase per year)
     base_salary *= (1 + (0.05 * experience));
     
     return base_salary;
@@ -84,14 +84,13 @@ void displayEducationLevels() {
     cout << "1. PhD\n";
     cout << "2. Master\n";
     cout << "3. Bachelor\n";
-    cout << "4. Diploma\n";
+    
 }
 
 void displayGenderOptions() {
     cout << "Gender Options:\n";
     cout << "1. Male\n";
     cout << "2. Female\n";
-    cout << "3. Other\n";
 }
 
 string getDepartment(int choice) {
@@ -99,7 +98,9 @@ string getDepartment(int choice) {
         case 1: return "Teaching";
         case 2: return "Administrative";
         case 3: return "Other";
-        default: return "Other";
+        default:
+            cout << "Invalid choice! Defaulting to Other.\n";
+            return "Other";
     }
 }
 
@@ -108,7 +109,10 @@ string getEducationLevel(int choice) {
         case 1: return "PhD";
         case 2: return "Master";
         case 3: return "Bachelor";
-        default: return "Diploma";
+        case 4: return "Diploma";
+        default: 
+            cout << "Invalid choice! Defaulting to Bachelor.\n";
+            return "Bachelor";
     }
 }
 
@@ -116,201 +120,191 @@ string getGender(int choice) {
     switch(choice) {
         case 1: return "Male";
         case 2: return "Female";
-      //  default: return "Other";
+        default:
+            cout << "Invalid choice! Defaulting to Male.\n";
+            return "Male";
     }
 }
 
 void getEmployeeDetails(Employee* newEmp) {
-    cout << "  Enter Employee Full Name: ";
-    cin.ignore();
-    getline(cin, newEmp->emp_full_name);
+    string name;
+    bool correct;
+
+    cin.ignore(); 
+
+    do {
+        correct = true;
+        cout << "  Enter Employee Full Name: ";
+        getline(cin, name);
+
+        if (name.empty()) {
+            cout << "  Name cannot be empty.\n";
+            correct = false;
+            continue;
+        }
+
+        for (char c : name) {
+            if (!isalpha(c) && c != ' ') {
+                cout << "  Invalid input. Only letters and spaces are allowed.\n";
+                correct = false;
+                break;
+            }
+        }
+    } while (!correct);
+
+    newEmp->emp_full_name = name;
     
-    // Gender selection
     int genderChoice;
     displayGenderOptions();
-    cout << "  Select Gender (1-2): ";
-    cin >> genderChoice;
+    do {
+        cout << "  Select Gender (1-2): ";
+        cin >> genderChoice;
+        if(genderChoice < 1 || genderChoice > 2)
+            cout << "  Invalid input\n";
+    } while(genderChoice < 1 || genderChoice > 2);
     newEmp->emp_gender = getGender(genderChoice);
     
     do {
         cout << "  Enter Unique Employee ID: ";
         cin >> newEmp->emp_id;
-        if (!check_ID(newEmp->emp_id)) cout << "  ID already exists. Try again.\n";
+        if (!check_ID(newEmp->emp_id)) 
+            cout << "  ID already exists. Try again.\n";
     } while (!check_ID(newEmp->emp_id));
     
-    // Department selection
     int deptChoice;
     displayDepartments();
-    cout << "  Select Department (1-3): ";
-    cin >> deptChoice;
+    do {
+        cout << "  Select Department (1-3): ";
+        cin >> deptChoice;
+        if(deptChoice < 1 || deptChoice > 3)
+            cout << "  Invalid input\n";
+    } while(deptChoice < 1 || deptChoice > 3);
     newEmp->emp_department = getDepartment(deptChoice);
     
-    // Education level
     int eduChoice;
     displayEducationLevels();
-    cout << "  Select Education Level (1-4): ";
-    cin >> eduChoice;
+    do {
+        cout << "  Select Education Level (1-3): ";
+        cin >> eduChoice;
+        if(eduChoice < 1 || eduChoice > 3)
+            cout << "  Invalid input\n";
+    } while(eduChoice < 1 || eduChoice > 3);
     newEmp->emp_education = getEducationLevel(eduChoice);
     
-    // Work experience
-    cout << "  Enter Years of Work Experience: ";
+    do {
+     cout << "  Enter Experience (1 to 20 years): ";
     cin >> newEmp->emp_experience;
-    
-    // Calculate salary based on department, education, and experience
+    if (newEmp->emp_experience < 1 || newEmp->emp_experience > 20)
+        cout << "  Invalid input. Please enter a value between 1 and 20.\n";
+    } while (newEmp->emp_experience < 1 || newEmp->emp_experience > 20);
+
     newEmp->emp_salary = calculateSalary(newEmp->emp_department, newEmp->emp_education, newEmp->emp_experience);
     
-    cout << "  Enter Employee Phone Number: ";
-    cin >> newEmp->emp_phoneNumber;
+    string phone;
+    bool valid;
+    do {
+        cout << "  Enter the Employee Phone Number (12 digits): ";
+        cin >> phone;
+        valid = true;
+        
+        if (phone.length() != 12) {
+            cout << "  Phone number must be exactly 12 digits.\n";
+            valid = false;
+            continue;
+        }
+
+        for (char c : phone) {
+            if (!isdigit(c)) {
+                cout << "  Invalid input. Only digits are allowed.\n";
+                valid = false;
+                break;
+            }
+        }
+    } while (!valid);
+
+    newEmp->emp_phoneNumber = phone;
 }
 
-void insert_beg() {
+void insert_emp() {
     Employee* newEmp = new Employee;
-    cout << "\nInserting Employee at Beginning:\n";
+    cout << "\nInserting Employee information:\n";
     getEmployeeDetails(newEmp);
     
     newEmp->prev = NULL;
     newEmp->next = head;
-    if (head != NULL) head->prev = newEmp;
-    else tail = newEmp;
+    if (head != NULL) 
+        head->prev = newEmp;
+    else 
+        tail = newEmp;
     head = newEmp;
     
-    cout << "Employee " << newEmp->emp_full_name << " inserted successfully at the beginning.\n";
-    cout << "Calculated Salary: $" << newEmp->emp_salary << "\n\n";
+    cout << "Employee " << newEmp->emp_full_name << " inserted successfully .\n";
+    cout << "Calculated Salary: " << newEmp->emp_salary<<"etb" << "\n\n";
 }
 
-void insert_random() {
-    int pos;
-    cout << "\nEnter the position you want to insert: ";
-    cin >> pos;
+void delete_emp() {
+    if (head == NULL) {
+        cout << "No employees to delete.\n";
+        return;
+    }
 
-    if (pos < 1 || pos > (numberOfEmp() + 1)) {
-        cout << "Invalid position!\n\n";
-        return;
-    }
-    
-    Employee* newEmp = new Employee;
-    cout << "\nInserting Employee at Position " << pos << ":\n";
-    getEmployeeDetails(newEmp);
-    
-    newEmp->prev = NULL;
-    newEmp->next = NULL;
-    
-    if (pos == 1) {
-        newEmp->next = head;
-        if (head != NULL) head->prev = newEmp;
-        else tail = newEmp;
-        head = newEmp;
-        cout << "Employee " << newEmp->emp_full_name << " inserted successfully at position " << pos << ".\n";
-        cout << "Calculated Salary: $" << newEmp->emp_salary << "\n\n";
-        return;
-    }
-    
-    if (pos == numberOfEmp() + 1) {
-        if (tail != NULL) {
-            tail->next = newEmp;
-            newEmp->prev = tail;
-        } else {
-            head = newEmp;
+    int option;
+    cout << "Delete by:\n";
+    cout << "1. Employee ID\n";
+    cout << "2. Employee Name\n";
+    cout << "Enter your choice: ";
+    cin >> option;
+    cin.ignore();
+
+    Employee* current = head;
+    bool found = false;
+    string searchTerm;
+
+    if (option == 1) {
+        cout << "Enter Employee ID to delete: ";
+        getline(cin, searchTerm);
+        while (current != NULL) {
+            if (current->emp_id == searchTerm) {
+                found = true;
+                break;
+            }
+            current = current->next;
         }
-        tail = newEmp;
-        cout << "Employee " << newEmp->emp_full_name << " inserted successfully at position " << pos << ".\n";
-        cout << "Calculated Salary: $" << newEmp->emp_salary << "\n\n";
-        return;
-    }
-    
-    Employee* temp = head;
-    for (int i = 1; i < pos - 1; i++) temp = temp->next;
-    
-    newEmp->next = temp->next;
-    newEmp->prev = temp;
-    temp->next->prev = newEmp;
-    temp->next = newEmp;
-    
-    cout << "Employee " << newEmp->emp_full_name << " inserted successfully at position " << pos << ".\n";
-    cout << "Calculated Salary: $" << newEmp->emp_salary << "\n\n";
-}
-
-void insert_last() {
-    Employee* newEmp = new Employee;
-    cout << "\nInserting Employee at End:\n";
-    getEmployeeDetails(newEmp);
-    
-    newEmp->next = NULL;
-    
-    if (tail == NULL) {
-        newEmp->prev = NULL;
-        head = tail = newEmp;
-        cout << "The list was empty. Employee inserted at beginning.\n";
+    } else if (option == 2) {
+        cout << "Enter Employee Name to delete: ";
+        getline(cin, searchTerm);
+        while (current != NULL) {
+            if (current->emp_full_name == searchTerm) {
+                found = true;
+                break;
+            }
+            current = current->next;
+        }
     } else {
-        newEmp->prev = tail;
-        tail->next = newEmp;
-        tail = newEmp;
-        cout << "Employee " << newEmp->emp_full_name << " inserted successfully at the end.\n";
-    }
-    
-    cout << "Calculated Salary: $" << newEmp->emp_salary << "\n\n";
-}
-
-void delete_beg() {
-    if (head == NULL) {
-        cout << "The list is empty.\n\n";
+        cout << "Invalid option.\n";
         return;
     }
-    Employee* temp = head;
-    head = head->next;
 
-    if (head != NULL) head->prev = NULL;
-    else tail = NULL;
-
-    cout << temp->emp_full_name << " deleted successfully from the beginning.\n\n";
-    delete temp;
-}
-
-void delete_random() {
-    if (head == NULL) {
-        cout << "The list is empty.\n";
+    if (!found) {
+        cout << "Employee not found.\n";
         return;
     }
-    int pos;
-    cout << "Enter the position of employee to delete: ";
-    cin >> pos;
-    if (pos < 1 || pos > numberOfEmp()) {
-        cout << "Invalid position!\n";
-        return;
-    }
-    Employee* temp = head;
-    if (pos == 1) {
-        head = head->next;
-        if (head != NULL) head->prev = NULL;
-        else tail = NULL;
-        cout << temp->emp_full_name << " deleted successfully from position " << pos << ".\n\n";
-        delete temp;
-        return;
-    }
-    for (int i = 1; i < pos; i++) temp = temp->next;
-    if (temp->next == NULL) {
-        tail = temp->prev;
+  
+    if (current == head && current == tail) { 
+        head = tail = NULL;
+    } else if (current == head) {
+        head = current->next;
+        head->prev = NULL;
+    } else if (current == tail) {
+        tail = current->prev;
         tail->next = NULL;
     } else {
-        temp->prev->next = temp->next;
-        temp->next->prev = temp->prev;
+        current->prev->next = current->next;
+        current->next->prev = current->prev;
     }
-    cout << temp->emp_full_name << " deleted successfully from position " << pos << ".\n\n";
-    delete temp;
-}
 
-void delete_last() {
-    if (head == NULL) {
-        cout << "The list is empty.\n";
-        return;
-    }
-    Employee* temp = tail;
-    tail = tail->prev;
-    if (tail != NULL) tail->next = NULL;
-    else head = NULL;
-
-    cout << temp->emp_full_name << " deleted successfully from the end.\n\n";
-    delete temp;
+    delete current;
+    cout << "Employee deleted successfully.\n";
 }
 
 void searching() {
@@ -331,7 +325,7 @@ void searching() {
             cout << "Department    : " << temp->emp_department << "\n";
             cout << "Education     : " << temp->emp_education << "\n";
             cout << "Experience    : " << temp->emp_experience << " years\n";
-            cout << "Salary        : $" << temp->emp_salary << "\n";
+            cout << "Salary        : " << temp->emp_salary<<"etb" << "\n";
             cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
             cout << "-------------------------------\n\n";   
             return;
@@ -341,35 +335,13 @@ void searching() {
     cout << "Employee with ID " << id << " not found.\n\n";
 }
 
-void backward() {
-    if (tail == NULL) {
-        cout << "The list is empty.\n";
-        return;
-    }
-    Employee* temp = tail;
-    cout << "\n--- Employee List (Backward) ---\n";
-    while (temp != NULL) {
-        cout << "Full Name     : " << temp->emp_full_name << "\n";
-        cout << "Employee ID   : " << temp->emp_id << "\n";
-        cout << "Gender        : " << temp->emp_gender << "\n";
-        cout << "Department    : " << temp->emp_department << "\n";
-        cout << "Education     : " << temp->emp_education << "\n";
-        cout << "Experience    : " << temp->emp_experience << " years\n";
-        cout << "Salary        : $" << temp->emp_salary << "\n";
-        cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
-        cout << "-------------------------------\n";
-        temp = temp->prev;
-    }
-    cout << "\n";
-}
-
-void forward() {
+void display_emp() {
     if (head == NULL) {
         cout << "The list is empty.\n";
         return;
     }
     Employee* temp = head;
-    cout << "\n--- Employee List (Forward) ---\n";
+    cout << "\n--- Employee List ---\n";
     while (temp != NULL) {
         cout << "Full Name     : " << temp->emp_full_name << "\n";
         cout << "Employee ID   : " << temp->emp_id << "\n";
@@ -377,7 +349,7 @@ void forward() {
         cout << "Department    : " << temp->emp_department << "\n";
         cout << "Education     : " << temp->emp_education << "\n";
         cout << "Experience    : " << temp->emp_experience << " years\n";
-        cout << "Salary        : $" << temp->emp_salary << "\n";
+        cout << "Salary        : " << temp->emp_salary<<"etb" << "\n";
         cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
         cout << "-------------------------------\n";
         temp = temp->next;
@@ -394,50 +366,64 @@ void update() {
         if (temp->emp_id == id) {
             cout << "Updating details for " << temp->emp_full_name << "...\n";
             
-            // Update basic information
             cout << "  Enter new full name: ";
             cin.ignore();
             getline(cin, temp->emp_full_name);
             
-            // Update gender
             int genderChoice;
             displayGenderOptions();
-            cout << "  Select new Gender (1-3, 0 to keep current): ";
+            cout << "  Select new Gender (1-2, 0 to keep current [" << temp->emp_gender << "]): ";
             cin >> genderChoice;
-            if (genderChoice > 0 && genderChoice < 4) {
+            if (genderChoice > 0 && genderChoice < 3) {
                 temp->emp_gender = getGender(genderChoice);
             }
             
-            // Update department
             int deptChoice;
             displayDepartments();
-            cout << "  Select new Department (1-3, 0 to keep current): ";
+            cout << "  Select new Department (1-3, 0 to keep current [" << temp->emp_department << "]): ";
             cin >> deptChoice;
             if (deptChoice > 0 && deptChoice < 4) {
                 temp->emp_department = getDepartment(deptChoice);
             }
             
-            // Update education
             int eduChoice;
             displayEducationLevels();
-            cout << "  Select new Education Level (1-4, 0 to keep current): ";
+            cout << "  Select new Education Level (1-4, 0 to keep current [" << temp->emp_education << "]): ";
             cin >> eduChoice;
             if (eduChoice > 0 && eduChoice < 5) {
                 temp->emp_education = getEducationLevel(eduChoice);
             }
             
-            // Update experience
             cout << "  Enter new years of experience (current: " << temp->emp_experience << "): ";
             cin >> temp->emp_experience;
             
-            // Recalculate salary
             temp->emp_salary = calculateSalary(temp->emp_department, temp->emp_education, temp->emp_experience);
             
-            cout << "  Enter new phone number: ";
-            cin >> temp->emp_phoneNumber;
+            string phone;
+            bool valid;
+            do {
+                cout << "  Enter new phone number (current: " << temp->emp_phoneNumber << "): ";
+                cin >> phone;
+                valid = true;
+                
+                if (phone.length() != 12) {
+                    cout << "  Phone number must be exactly 12 digits.\n";
+                    valid = false;
+                    continue;
+                }
+
+                for (char c : phone) {
+                    if (!isdigit(c)) {
+                        cout << "  Invalid input. Only digits are allowed.\n";
+                        valid = false;
+                        break;
+                    }
+                }
+            } while (!valid);
+            temp->emp_phoneNumber = phone;
             
             cout << "Employee details updated successfully.\n";
-            cout << "New calculated salary: $" << temp->emp_salary << "\n\n";
+            cout << "New calculated salary: " << temp->emp_salary<< "etb" << "\n\n";
             return;
         }
         temp = temp->next;
@@ -454,7 +440,7 @@ void retrieve() {
         return;
     }
     Employee* temp = head;
-    while (temp != NULL) {
+    while (temp != NULL) { 
         if (temp->emp_id == id) {
             cout << "\n--- Employee Found ---\n";
             cout << "Full Name     : " << temp->emp_full_name << "\n";
@@ -463,7 +449,7 @@ void retrieve() {
             cout << "Department    : " << temp->emp_department << "\n";
             cout << "Education     : " << temp->emp_education << "\n";
             cout << "Experience    : " << temp->emp_experience << " years\n";
-            cout << "Salary        : $" << temp->emp_salary << "\n";
+            cout << "Salary        : " << temp->emp_salary<<"etb" << "\n";
             cout << "Phone Number  : " << temp->emp_phoneNumber << "\n";
             cout << "-------------------------------\n\n";
             return;
@@ -608,11 +594,11 @@ void sortEmployees() {
             return;
     }
     cout << "Employees sorted successfully!\n";
-    forward(); // Display the sorted list
+    display_emp();
 }
 
 void savetofile() {
-    ofstream outFile("employees.txt");
+    ofstream outFile(FILENAME);
     if (!outFile) {
         cout << "Error opening file for writing!\n";
         return;
@@ -634,14 +620,14 @@ void savetofile() {
     outFile.close();
     cout << "Employee data saved to file successfully!\n";
 }
+
 void loadfromfile() {
-    ifstream inFile("employees.txt");
+    ifstream inFile(FILENAME);
     if (!inFile) {
         cout << "No existing employee data found.\n";
         return;
     }
 
-    // Clear existing list
     while (head != NULL) {
         Employee* temp = head;
         head = head->next;
@@ -653,58 +639,43 @@ void loadfromfile() {
     while (true) {
         Employee* newEmp = new Employee;
 
-        // Read full name
         if (!getline(inFile, newEmp->emp_full_name)) {
             delete newEmp;
             break;
         }
-
-        // Read ID
         if (!getline(inFile, newEmp->emp_id)) {
             delete newEmp;
             break;
         }
-
-        // Read gender
         if (!getline(inFile, newEmp->emp_gender)) {
             delete newEmp;
             break;
         }
-
-        // Read department
         if (!getline(inFile, newEmp->emp_department)) {
             delete newEmp;
             break;
         }
-
-        // Read education
         if (!getline(inFile, newEmp->emp_education)) {
             delete newEmp;
             break;
         }
-
-        // Read experience (convert string to int)
         if (!getline(inFile, line)) {
             delete newEmp;
             break;
         }
-        newEmp->emp_experience = stoi(line); // <-- stoi used here
-
-        // Read salary (convert string to double)
+        newEmp->emp_experience = stoi(line);
+        
         if (!getline(inFile, line)) {
             delete newEmp;
             break;
         }
-        newEmp->emp_salary = stod(line); // <-- stod used here
-
-        // Read phone number (convert string to int)C
-        if (!getline(inFile, line)) {
+        newEmp->emp_salary = stod(line);
+        
+        if (!getline(inFile, newEmp->emp_phoneNumber)) {
             delete newEmp;
             break;
         }
-        newEmp->emp_phoneNumber = stoi(line); // <-- stoi used here
 
-        // Link the new employee to the list
         newEmp->prev = tail;
         newEmp->next = NULL;
 
@@ -721,11 +692,11 @@ void loadfromfile() {
 }
 
 void menu() {
-    loadfromfile(); // Load data when program starts
+    loadfromfile(); 
     
     int choice;
     do {
-        cout << "=============== EMPLOYEE SYSTEM ===============\n";
+        cout << "=============== EMPLOYEE REGISTRATION SYSTEM ===============\n";
         cout << "1: Insert employee\n";
         cout << "2: Delete employee\n";
         cout << "3: Display employees\n";
@@ -739,40 +710,15 @@ void menu() {
         cin >> choice;
         
         switch (choice) {
-            case 1: {
-                int add;
-                cout << " Enter 1 to insert at beginning\n";
-                cout << " Enter 2 to insert at specific position\n"; 
-                cout << " Enter 3 to insert at end: ";
-                cin >> add;
-                if (add == 1) insert_beg();
-                else if (add == 2) insert_random();
-                else if (add == 3) insert_last();
-                else cout << "Invalid insert choice!\n";
+            case 1: 
+                insert_emp();
                 break;
-            }
-            case 2: {
-                int del;
-                cout << "Enter 1 to delete at beginning\n";
-                cout << "Enter 2 to delete at specific position\n";
-                cout << "Enter 3 to delete at end: ";
-                cin >> del;
-                if (del == 1) delete_beg();
-                else if (del == 2) delete_random();
-                else if (del == 3) delete_last();
-                else cout << "Invalid delete choice!\n";
+            case 2: 
+                delete_emp();
                 break;
-            }
-            case 3: { 
-                int display;
-                cout << "Enter 1 to display forward\n";
-                cout << "Enter 2 to display backward: ";
-                cin >> display;
-                if (display == 1) forward();
-                else if (display == 2) backward();
-                else cout << "Invalid display choice!\n";
+            case 3: 
+                display_emp();
                 break;
-            }
             case 4:
                 searching();
                 break;
@@ -789,7 +735,7 @@ void menu() {
                 sortEmployees();   
                 break;
             case 0:
-                savetofile(); 
+                savetofile();
                 cout << "Exiting program...\n";
                 break;
             default:
